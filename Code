@@ -1,0 +1,112 @@
+#include <iostream> 
+#include <iomanip> 
+#include <cmath> 
+#include <fstream>
+#include <istream>
+
+using namespace std;
+
+//Класс дифференциальные уравнения
+class Differential_equation {
+public:
+	void set_x0(double x0cin)
+	{
+		x0 = x0cin;
+	}
+
+	void set_t0(double t0cin)
+	{
+		t0 = t0cin;
+	}
+	void set_x(double xcin)
+	{
+		x = xcin;
+	}
+
+	void set_h(double hcin)
+	{
+		h = hcin;
+	}
+	// Вычисление значения функции в точке
+	double df(double x, double t) //function for defining dt/dx 
+	{
+		double a = pow(t, 2) - 2 * x;
+		return a;
+	}
+
+	//Вывод решение на экран
+	void output_to_the_screen()
+	{
+		cout << "x_i" << setw(17) << "t_i" << setw(17) << "dt/dx" << setw(16) << "t_i+1" << endl;
+		cout << ".........................................................." << endl;
+		while (fabs(x - x0) > 0.0000001)
+		{
+			//Находим t_i+1
+			t = t0 + (h * df(x0, t0));
+			cout << x0 << setw(16) << t0 << setw(16) << df(x0, t0) << setw(16) << t << endl;
+			t0 = t;
+			x0 = x0 + h;
+		}
+		cout << ".........................................................." << endl;
+		cout << x0 << setw(16) << t << endl;
+		cout << ".........................................................." << endl;
+		cout << "The approximate value of t at x=" << x << " is " << t << endl;
+	}
+
+	void File_solution()
+	{
+		ofstream file("file.txt");
+		file << "x(t)=" << x << endl;
+		cout << "t=" << t << endl;
+		file.close();
+	}
+private:
+	double x0, t0, x, t, h;
+
+};
+
+
+
+int main()
+{
+
+	Differential_equation DE;
+	//Переменные
+	double x0, t0, x, t, h;
+
+	//Точность вычислений
+	cout.precision(5); //for precision 
+
+	//Для красивого вывода
+	cout.setf(ios::fixed);
+
+	cout << "Solution of the equation d(x)/d(y)= t^2-2*x  by Euler's method" << endl;
+	//Ввод начальных значений
+	cout << "Enter the initial value:" << endl;
+
+	cout << "t0=";
+	cin >> t0;
+	DE.set_t0(t0);
+
+	cout << "x0=";
+	cin >> x0;
+	DE.set_x0(x0);
+
+	//Для какого значения x вы хотите найти значение
+	cout << "For what value of x do you want to find the value of t" << endl;
+	cout << "x(t)=";
+	cin >> x;
+	DE.set_x(x);
+
+	//Шаг
+	cout << "Enter a step:" << endl;
+	cout << "h=";
+	cin >> h;
+	DE.set_h(h);
+
+	//Используем методы класса
+	DE.output_to_the_screen();
+	DE.File_solution();
+
+	return 0;
+}
